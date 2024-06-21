@@ -2,11 +2,6 @@
 #include <iostream>
 using namespace std;
 
-int main() {
-  assert(batteryIsOk(25, 70, 0.7) == true);
-  assert(batteryIsOk(50, 85, 0) == false);
-}
-
 bool temperaturecheck(float temperature) {
   if(temperature < 0 || temperature > 45) 
   {
@@ -29,5 +24,10 @@ bool batteryIsOk(float temperature, float soc, float chargeRate) {
   bool tempIsOk = temperaturecheck(temperature);
   bool socIsOk = soccheck(soc);
   bool chargeRateIsOk = chargeRatecheck(chargeRate);
-  return tempIsOk && socIsOk && chargeRateIsOk ;
+  return tempIsOk && socIsOk && chargeRateIsOk;
+
+int main() {
+  assert(batteryIsOk(25, 70, 0.7) == true);
+  assert(batteryIsOk(50, 85, 0) == false);
+}
   
