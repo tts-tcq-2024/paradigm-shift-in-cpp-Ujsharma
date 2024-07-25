@@ -15,45 +15,43 @@ const float TEMPERATURE_WARNING_TOLERANCE = 0.05 * TEMPERATURE_UPPER_LIMIT;
 const float SOC_WARNING_TOLERANCE = 0.05 * SOC_UPPER_LIMIT;
 const float CHARGE_RATE_WARNING_TOLERANCE = 0.05 * CHARGE_RATE_UPPER_LIMIT;
 
-bool isWithinRange(float value, float lowerLimit, float upperLimit, const string& parameterName) {
-    if (value < lowerLimit || value > upperLimit) {
-        cout << parameterName << " out of range!\n";
+bool temperaturecheck(float temperature) {
+    if (temperature < TEMPERATURE_LOWER_LIMIT || temperature > TEMPERATURE_UPPER_LIMIT) {
+        cout << "Temperature out of range!\n";
         return false;
+    }
+    if (temperature <= TEMPERATURE_LOWER_LIMIT + TEMPERATURE_WARNING_TOLERANCE) {
+        cout << "Warning: Approaching temperature discharge!\n";
+    }
+    if (temperature >= TEMPERATURE_UPPER_LIMIT - TEMPERATURE_WARNING_TOLERANCE) {
+        cout << "Warning: Approaching temperature peak!\n";
     }
     return true;
 }
 
-void checkWarnings(float value, float lowerLimit, float upperLimit, float warningTolerance, const string& lowerWarningMsg, const string& upperWarningMsg) {
-    if (value <= lowerLimit + warningTolerance) {
-        cout << lowerWarningMsg << "\n";
-    }
-    if (value >= upperLimit - warningTolerance) {
-        cout << upperWarningMsg << "\n";
-    }
-}
-
-bool temperaturecheck(float temperature) {
-    bool inRange = isWithinRange(temperature, TEMPERATURE_LOWER_LIMIT, TEMPERATURE_UPPER_LIMIT, "Temperature");
-    if (inRange) {
-        checkWarnings(temperature, TEMPERATURE_LOWER_LIMIT, TEMPERATURE_UPPER_LIMIT, TEMPERATURE_WARNING_TOLERANCE, "Warning: Approaching temperature discharge!", "Warning: Approaching temperature peak!");
-    }
-    return inRange;
-}
-
 bool soccheck(float soc) {
-    bool inRange = isWithinRange(soc, SOC_LOWER_LIMIT, SOC_UPPER_LIMIT, "State of Charge");
-    if (inRange) {
-        checkWarnings(soc, SOC_LOWER_LIMIT, SOC_UPPER_LIMIT, SOC_WARNING_TOLERANCE, "Warning: Approaching SoC discharge!", "Warning: Approaching SoC peak!");
+    if (soc < SOC_LOWER_LIMIT || soc > SOC_UPPER_LIMIT) {
+        cout << "State of Charge out of range!\n";
+        return false;
     }
-    return inRange;
+    if (soc <= SOC_LOWER_LIMIT + SOC_WARNING_TOLERANCE) {
+        cout << "Warning: Approaching SoC discharge!\n";
+    }
+    if (soc >= SOC_UPPER_LIMIT - SOC_WARNING_TOLERANCE) {
+        cout << "Warning: Approaching SoC peak!\n";
+    }
+    return true;
 }
 
 bool chargeRatecheck(float chargeRate) {
-    bool inRange = isWithinRange(chargeRate, 0, CHARGE_RATE_UPPER_LIMIT, "Charge Rate");
-    if (inRange && chargeRate >= CHARGE_RATE_UPPER_LIMIT - CHARGE_RATE_WARNING_TOLERANCE) {
+    if (chargeRate > CHARGE_RATE_UPPER_LIMIT) {
+        cout << "Charge Rate out of range!\n";
+        return false;
+    }
+    if (chargeRate >= CHARGE_RATE_UPPER_LIMIT - CHARGE_RATE_WARNING_TOLERANCE) {
         cout << "Warning: Approaching charge rate peak!\n";
     }
-    return inRange;
+    return true;
 }
 
 bool batteryIsOk(float temperature, float soc, float chargeRate) {
