@@ -59,7 +59,7 @@ Shorten the Semantic distance
 - Object oriented to encapsulate state with actions
 - Apect oriented to capture repeating aspects
 
-Extending and Refactoring
+## Extending and Refactoring
 
 This exercise is about extending functionality. Work on the repository from your previous assignment to extend it (see extensions below). Often, code becomes more complex while extending it. The 'cleanliness' of the code goes down.
 
@@ -69,7 +69,7 @@ This assignment is a continuation in the Paradigm Shift.
 Extensions
 
 Try at least One of these extensions on your code. Mention the extensions you select in your README.md file.
-Extension 1: Early Warning
+## Extension 1: Early Warning
 
 Customers need early warnings to take action, in addition to the alarm that you print after the limit is breached. Introduce a 'warning' level with a tolerance of 5% of the upper-limit.
 
@@ -81,7 +81,7 @@ Example: If the SoC needs to be between 20 and 80, the warning-tolerance is 5% o
 Same for Temperature and Charge-rate.
 
 Keep in mind: Though we are starting with warning levels for all parameters, customers may give feedback to have warnings only for some parameters and not others. Minimize the change needed for such 'tuning'.
-Extension 2: Support a language in addition to English
+## Extension 2: Support a language in addition to English
 
 Our market has expanded to German-speaking countries! Switch the language of the printed messages based on a global variable.
 
