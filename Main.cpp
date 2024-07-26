@@ -5,6 +5,7 @@
 void testBatteryMonitoring() {
     // Initialize translations
     initializeTranslations();
+    setLanguage("de");
 
     // Test inputs
     float soc = 22.0;
@@ -26,7 +27,7 @@ void testBatteryMonitoring() {
     assert(chargeRateMessage == expectedChargeRateMessage);
 
     // Repeat the test for English
-    language = "en";
+    setLanguage("en");
     expectedSocMessage = "Warning: Approaching discharge";
     expectedTemperatureMessage = "Warning: Approaching temperature peak";
     expectedChargeRateMessage = "Warning: Approaching charge rate";
