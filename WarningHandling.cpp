@@ -1,5 +1,6 @@
 #include "BatteryMonitoring.h"
 #include <map>
+#include <vector>
 
 // Tolerance Calculation Function
 float calculateTolerance(float limit) {
@@ -11,30 +12,35 @@ const float SOC_TOLERANCE = calculateTolerance(SOC_HIGH_LIMIT);
 const float TEMPERATURE_TOLERANCE = calculateTolerance(TEMPERATURE_HIGH_LIMIT);
 const float CHARGE_RATE_TOLERANCE = calculateTolerance(CHARGE_RATE_HIGH_LIMIT);
 
-// Helper function to get warning message based on the boundary conditions
-std::string getWarningMessage(float value, float lowerLimit, float upperLimit, float tolerance, 
-                              const std::string& lowerWarningKey, const std::string& upperWarningKey, 
-                              const std::string& language) {
-    if (value >= lowerLimit && value < lowerLimit + tolerance) {
-        return translations[language][lowerWarningKey];
+// Boundary structure
+struct Boundary {
+    float lowerLimit;
+    float upperLimit;
+    std::string lowerWarningKey;
+    std::string upperWarningKey;
+};
+
+std::string getWarningMessage(float value, const Boundary& boundary, float tolerance, const std::string& language) {
+    if (value >= boundary.lowerLimit && value < boundary.lowerLimit + tolerance) {
+        return translations[language][boundary.lowerWarningKey];
     }
-    if (value >= upperLimit - tolerance && value <= upperLimit) {
-        return translations[language][upperWarningKey];
+    if (value >= boundary.upperLimit - tolerance && value <= boundary.upperLimit) {
+        return translations[language][boundary.upperWarningKey];
     }
     return "";
 }
 
 std::string mapSocToMessage(float soc, const std::string& language) {
-    return getWarningMessage(soc, SOC_LOW_LIMIT, SOC_HIGH_LIMIT, SOC_TOLERANCE, 
-                             "low_soc_warning", "high_soc_warning", language);
+    Boundary socBoundary = {SOC_LOW_LIMIT, SOC_HIGH_LIMIT, "low_soc_warning", "high_soc_warning"};
+    return getWarningMessage(soc, socBoundary, SOC_TOLERANCE, language);
 }
 
 std::string mapTemperatureToMessage(float temperature, const std::string& language) {
-    return getWarningMessage(temperature, TEMPERATURE_LOW_LIMIT, TEMPERATURE_HIGH_LIMIT, 
-                             TEMPERATURE_TOLERANCE, "low_temperature_warning", "high_temperature_warning", language);
+    Boundary tempBoundary = {TEMPERATURE_LOW_LIMIT, TEMPERATURE_HIGH_LIMIT, "low_temperature_warning", "high_temperature_warning"};
+    return getWarningMessage(temperature, tempBoundary, TEMPERATURE_TOLERANCE, language);
 }
 
 std::string mapChargeRateToMessage(float chargeRate, const std::string& language) {
-    return getWarningMessage(chargeRate, CHARGE_RATE_LOW_LIMIT, CHARGE_RATE_HIGH_LIMIT, 
-                             CHARGE_RATE_TOLERANCE, "low_charge_rate_warning", "high_charge_rate_warning", language);
+    Boundary chargeBoundary = {CHARGE_RATE_LOW_LIMIT, CHARGE_RATE_HIGH_LIMIT, "low_charge_rate_warning", "high_charge_rate_warning"};
+    return getWarningMessage(chargeRate, chargeBoundary, CHARGE_RATE_TOLERANCE, language);
 }
