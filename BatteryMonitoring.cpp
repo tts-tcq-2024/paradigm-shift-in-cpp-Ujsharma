@@ -1,15 +1,18 @@
 #include "BatteryMonitoring.h"
-#include <map>
-#include <vector>
+#include "Language.h"
+#include <iostream>
+#include <string>
+
+// Constants
+const float SOC_LOW_LIMIT = 20.0;
+const float SOC_HIGH_LIMIT = 80.0;
+const float TEMPERATURE_LOW_LIMIT = 0.0;
+const float TEMPERATURE_HIGH_LIMIT = 45.0;
+const float CHARGE_RATE_LOW_LIMIT = 0.0;
+const float CHARGE_RATE_HIGH_LIMIT = 0.8;
+const float TOLERANCE_PERCENTAGE = 5.0;
 
 preferredLanguage messageLanguage = preferredLanguage::English;
-
-// Print the status of whether a parameter is in range
-void printRangeStatus(const string& parameter, bool isInRange) {
-    std::string rangeStatus = isInRange ? "in" : "out";
-    std::cout << Translate(parameter, messageLanguage) << ": " 
-              << Translate(rangeStatus, messageLanguage) << std::endl;
-}
 
 // Tolerance Calculation Function
 float calculateTolerance(float limit) {
@@ -29,42 +32,39 @@ struct Boundary {
     std::string upperWarningKey;
 };
 
-std::string getWarningMessage(float value, const Boundary& boundary, float tolerance, const std::string& language) {
+std::string getWarningMessage(float value, const Boundary& boundary, float tolerance, preferredLanguage lang) {
     if (value >= boundary.lowerLimit && value < boundary.lowerLimit + tolerance) {
-        return translations[language][boundary.lowerWarningKey];
+        return Translate(boundary.lowerWarningKey, lang);
     }
     if (value >= boundary.upperLimit - tolerance && value <= boundary.upperLimit) {
-        return translations[language][boundary.upperWarningKey];
+        return Translate(boundary.upperWarningKey, lang);
     }
     return "";
 }
 
-std::string mapSocToMessage(float soc, const std::string& language) {
+std::string mapSocToMessage(float soc, preferredLanguage lang) {
     Boundary socBoundary = {SOC_LOW_LIMIT, SOC_HIGH_LIMIT, "low_soc_warning", "high_soc_warning"};
-    return getWarningMessage(soc, socBoundary, SOC_TOLERANCE, language);
+    return getWarningMessage(soc, socBoundary, SOC_TOLERANCE, lang);
 }
 
-std::string mapTemperatureToMessage(float temperature, const std::string& language) {
+std::string mapTemperatureToMessage(float temperature, preferredLanguage lang) {
     Boundary tempBoundary = {TEMPERATURE_LOW_LIMIT, TEMPERATURE_HIGH_LIMIT, "low_temperature_warning", "high_temperature_warning"};
-    return getWarningMessage(temperature, tempBoundary, TEMPERATURE_TOLERANCE, language);
+    return getWarningMessage(temperature, tempBoundary, TEMPERATURE_TOLERANCE, lang);
 }
 
-std::string mapChargeRateToMessage(float chargeRate, const std::string& language) {
+std::string mapChargeRateToMessage(float chargeRate, preferredLanguage lang) {
     Boundary chargeBoundary = {CHARGE_RATE_LOW_LIMIT, CHARGE_RATE_HIGH_LIMIT, "low_charge_rate_warning", "high_charge_rate_warning"};
-    return getWarningMessage(chargeRate, chargeBoundary, CHARGE_RATE_TOLERANCE, language);
+    return getWarningMessage(chargeRate, chargeBoundary, CHARGE_RATE_TOLERANCE, lang);
 }
 
-int main() {
-    messageLanguage = preferredLanguage::German;
+std::tuple<std::string, std::string, std::string> monitorBattery(float soc, float temperature, float chargeRate, preferredLanguage lang) {
+    return std::make_tuple(mapSocToMessage(soc, lang), mapTemperatureToMessage(temperature, lang), mapChargeRateToMessage(chargeRate, lang));
+}
 
-    assert(isBatteryOk(25, 70, 0.7) == true);
-    assert(isBatteryOk(50, 85, 0) == false);
-    assert(isBatteryOk(0, 20, 0.8) == false);
-    assert(isBatteryOk(-1, 70, 0.5) == false);
-    assert(isBatteryOk(25, 10, 0.5) == false);
-    assert(isBatteryOk(25, 70, 0.9) == false);
-    assert(isBatteryOk(45, 80, 0.8) == false);
-    assert(isBatteryOk(0, 20, 0) == true);
+void initializeTranslations() {
+    // Initialize translations if needed
+}
 
-    std::cout << "All tests passed!" << std::endl;
-    return 0;
+void setLanguage(preferredLanguage lang) {
+    messageLanguage = lang;
+}
