@@ -35,10 +35,10 @@ std::string getLowLimitMessage(preferredLanguage lang);
 std::string getHighLimitMessage(preferredLanguage lang);
 std::string getNormalRangeMessage(preferredLanguage lang);
 
-std::string getWarningMessage(float value, float lowLimit, float highLimit, preferredLanguage lang) {
-    if (value < lowLimit) {
-        return getLowLimitMessage(lang);
-    } else if (value > highLimit) {
+std::string getWarningMessage(float value, const Boundary& boundary, float tolerance, preferredLanguage lang) {
+    if (value < boundary.lowerLimit - tolerance) {
+        return getLowLimitMessage(lang); 
+    } else if (value > boundary.upperLimit + tolerance) {
         return getHighLimitMessage(lang);
     } else {
         return getNormalRangeMessage(lang);
