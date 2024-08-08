@@ -20,17 +20,23 @@ bool isWithinRange(float value, float lowerLimit, float upperLimit) {
 
 // Function to check if temperature is within the allowed range
 bool checkTemperature(float temperature) {
-    return isWithinRange(temperature, 0, 45);
+    bool result = isWithinRange(temperature, 0, 45);
+    cout << "Temperature Check: " << temperature << " -> " << (result ? "in range" : "out of range") << endl;
+    return result;
 }
 
 // Function to check if State of Charge (SOC) is within the allowed range
 bool checkSoc(float soc) {
-    return isWithinRange(soc, 20, 80);
+    bool result = isWithinRange(soc, 20, 80);
+    cout << "SOC Check: " << soc << " -> " << (result ? "in range" : "out of range") << endl;
+    return result;
 }
 
 // Function to check if charge rate is within the allowed range
 bool checkChargeRate(float chargeRate) {
-    return (chargeRate >= 0 && chargeRate <= 0.8);
+    bool result = isWithinRange(chargeRate, 0, 0.8);
+    cout << "Charge Rate Check: " << chargeRate << " -> " << (result ? "in range" : "out of range") << endl;
+    return result;
 }
 
 // Function to verify if all battery parameters are within the specified ranges
