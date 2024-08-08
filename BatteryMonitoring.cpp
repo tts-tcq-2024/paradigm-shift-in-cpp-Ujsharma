@@ -12,8 +12,6 @@ const float CHARGE_RATE_LOW_LIMIT = 0.0;
 const float CHARGE_RATE_HIGH_LIMIT = 0.8;
 const float TOLERANCE_PERCENTAGE = 5.0;
 
-preferredLanguage messageLanguage = preferredLanguage::English;
-
 // Tolerance Calculation Function
 float calculateTolerance(float limit) {
     return limit * TOLERANCE_PERCENTAGE / 100.0;
@@ -66,5 +64,5 @@ void initializeTranslations() {
 }
 
 void setLanguage(preferredLanguage lang) {
-    messageLanguage = lang;
+    // Implementation to set language globally if needed
 }
