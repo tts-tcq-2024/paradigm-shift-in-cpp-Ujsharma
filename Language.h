@@ -1,15 +1,14 @@
-#ifndef LANGUAGETRANSITIONS_H
-#define LANGUAGETRANSITIONS_H
+// BatteryMonitoring.h
+#ifndef BATTERY_MONITORING_H
+#define BATTERY_MONITORING_H
 
 #include <string>
 
-// Enum class for supported languages
-enum class preferredLanguage {
-    English,
-    German
-};
+enum class preferredLanguage { English, German };
 
-// Function to translate messages
-std::string Translate(const std::string& key, preferredLanguage lang);
+std::string getWarningMessage(float value, float lowLimit, float highLimit, preferredLanguage lang);
+std::string getLowLimitMessage(preferredLanguage lang);
+std::string getHighLimitMessage(preferredLanguage lang);
+std::string getNormalRangeMessage(preferredLanguage lang);
 
-#endif // LANGUAGETRANSITIONS_H
+#endif // BATTERY_MONITORING_H
