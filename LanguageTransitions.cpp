@@ -1,26 +1,33 @@
-#include "BatteryMonitoring.h"
+#include "LanguageTransitions.h"
 #include <map>
+#include <string>
 
-std::map<std::string, std::map<std::string, std::string>> translations;
+// Defining the translation map
+const std::map<std::string, std::map<std::string, std::string>> translateMessage{
+    {"english", {{"Temperature", "Temperature"}, {"State of Charge", "State Of Charge"}, {"Charge Rate", "Charge Rate"}, {"out", "is out of range"}, {"in", "is in range"}}},
+    {"german", {{"Temperature", "Temperatur"}, {"State of Charge", "Ladezustand"}, {"Charge Rate", "Laderate"}, {"out", "liegt außerhalb des Bereichs"}, {"in", "liegt im Bereich"}}}
+};
 
-void initializeTranslations() {
-    translations["en"]["low_soc_warning"] = "Warning: Approaching discharge";
-    translations["en"]["high_soc_warning"] = "Warning: Approaching charge-peak";
-    translations["en"]["low_temperature_warning"] = "Warning: Approaching low temperature";
-    translations["en"]["high_temperature_warning"] = "Warning: Approaching temperature peak";
-    translations["en"]["low_charge_rate_warning"] = "Warning: Approaching low charge rate";
-    translations["en"]["high_charge_rate_warning"] = "Warning: Approaching charge rate";
-    
-    translations["de"]["low_soc_warning"] = "Warnung: Batterie nähert sich der Entladung";
-    translations["de"]["high_soc_warning"] = "Warnung: Batterie nähert sich dem Ladehöchstwert";
-    translations["de"]["low_temperature_warning"] = "Warnung: Batterie nähert sich der niedrigen Temperatur";
-    translations["de"]["high_temperature_warning"] = "Warnung: Batterie nähert sich dem Temperaturhöchstwert";
-    translations["de"]["low_charge_rate_warning"] = "Warnung: Batterie nähert sich der niedrigen Laderate";
-    translations["de"]["high_charge_rate_warning"] = "Warnung: Batterie nähert sich der Laderate";
+// Helper function to convert preferredLanguage enum to string
+std::string languageToString(preferredLanguage lang) {
+    switch (lang) {
+        case preferredLanguage::English: return "english";
+        case preferredLanguage::German: return "german";
+        default: return "english"; // Default to English if unknown
+    }
 }
 
-void setLanguage(const std::string& language) {
-    if (translations.find(language) == translations.end()) {
-        // Handle error: language not initialized
+// Function to translate messages
+std::string messageTranslate(const std::string& key, preferredLanguage lang) {
+    std::string langStr = languageToString(lang);
+
+    // Check if the current language has a translation for the given key
+    if (translateMessage.find(langStr) != translateMessage.end()) {
+        const auto& translations = translateMessage.at(langStr);
+        if (translations.find(key) != translations.end()) {
+            return translations.at(key);
+        }
     }
+    // If no translation is found, return the key itself
+    return key;
 }
