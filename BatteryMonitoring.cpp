@@ -125,3 +125,11 @@ bool isBatteryOk(float temperature, float soc, float chargeRate, preferredLangua
     bool chargeRateOk = isChargeRateOk(chargeRate, lang);
     return temperatureOk && socOk && chargeRateOk;
 }
+
+void initializeTranslations() {
+    // Initialize translations if needed
+}
+
+void setLanguage(preferredLanguage lang) {
+    // Implementation to set language globally if needed
+}
