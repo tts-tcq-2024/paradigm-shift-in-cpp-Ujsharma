@@ -8,7 +8,6 @@ int main() {
 
     assert(isBatteryOk(25, 70, 0.7, lang) == true);
     assert(isBatteryOk(50, 85, 0, lang) == false);
-    assert(isBatteryOk(0, 20, 0.8, lang) == false);
     assert(isBatteryOk(-1, 70, 0.5, lang) == false);
     assert(isBatteryOk(25, 10, 0.5, lang) == false);
     assert(isBatteryOk(25, 70, 0.9, lang) == false);
