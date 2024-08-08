@@ -6,6 +6,7 @@
 
 using namespace std;
 
+
 preferredLanguage messageLanguage = preferredLanguage::English;
 
 // Print the status of whether a parameter is in range
