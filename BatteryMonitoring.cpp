@@ -1,5 +1,4 @@
 #include "BatteryMonitoring.h"
-#include "Translation.h"
 #include "Language.h"
 #include <iostream>
 #include <string>
