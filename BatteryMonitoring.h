@@ -3,6 +3,7 @@
 
 #include <string>
 #include <tuple>
+#include "Language.h"
 
 // Constants
 extern const float SOC_LOW_LIMIT;
@@ -14,13 +15,13 @@ extern const float CHARGE_RATE_HIGH_LIMIT;
 extern const float TOLERANCE_PERCENTAGE;
 
 // Function declarations for warning handling
-std::string mapSocToMessage(float soc, const std::string& language);
-std::string mapTemperatureToMessage(float temperature, const std::string& language);
-std::string mapChargeRateToMessage(float chargeRate, const std::string& language);
-std::tuple<std::string, std::string, std::string> monitorBattery(float soc, float temperature, float chargeRate, const std::string& language);
+std::string mapSocToMessage(float soc, preferredLanguage lang);
+std::string mapTemperatureToMessage(float temperature, preferredLanguage lang);
+std::string mapChargeRateToMessage(float chargeRate, preferredLanguage lang);
+std::tuple<std::string, std::string, std::string> monitorBattery(float soc, float temperature, float chargeRate, preferredLanguage lang);
 
 // Function declarations for language transitions
 void initializeTranslations();
-void setLanguage(const std::string& language);
+void setLanguage(preferredLanguage lang);
 
 #endif // BATTERYMONITORING_H
