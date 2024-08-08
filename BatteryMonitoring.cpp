@@ -30,15 +30,49 @@ struct Boundary {
     std::string upperWarningKey;
 };
 
-std::string getWarningMessage(float value, const Boundary& boundary, float tolerance, preferredLanguage lang) {
-    if (value >= boundary.lowerLimit && value < boundary.lowerLimit + tolerance) {
-        return Translate(boundary.lowerWarningKey, lang);
+std::string getWarningMessage(float value, float lowLimit, float highLimit, preferredLanguage lang) {
+    if (value < lowLimit) {
+        return getLowLimitMessage(lang);
+    } else if (value > highLimit) {
+        return getHighLimitMessage(lang);
+    } else {
+        return getNormalRangeMessage(lang);
     }
-    if (value >= boundary.upperLimit - tolerance && value <= boundary.upperLimit) {
-        return Translate(boundary.upperWarningKey, lang);
-    }
-    return "";
 }
+
+std::string getLowLimitMessage(preferredLanguage lang) {
+    switch (lang) {
+        case preferredLanguage::English:
+            return "Value is below the low limit.";
+        case preferredLanguage::German:
+            return "Wert liegt unterhalb der unteren Grenze.";
+        default:
+            return "";
+    }
+}
+
+std::string getHighLimitMessage(preferredLanguage lang) {
+    switch (lang) {
+        case preferredLanguage::English:
+            return "Value is above the high limit.";
+        case preferredLanguage::German:
+            return "Wert liegt über der oberen Grenze.";
+        default:
+            return "";
+    }
+}
+
+std::string getNormalRangeMessage(preferredLanguage lang) {
+    switch (lang) {
+        case preferredLanguage::English:
+            return "Value is within the normal range.";
+        case preferredLanguage::German:
+            return "Wert liegt im normalen Bereich.";
+        default:
+            return "";
+    }
+}
+
 
 std::string mapSocToMessage(float soc, preferredLanguage lang) {
     Boundary socBoundary = {SOC_LOW_LIMIT, SOC_HIGH_LIMIT, "low_soc_warning", "high_soc_warning"};
