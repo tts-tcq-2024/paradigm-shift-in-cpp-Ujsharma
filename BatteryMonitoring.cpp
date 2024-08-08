@@ -1,132 +1,72 @@
-#include "BatteryMonitoring.h"
-#include "Language.h"
+#include <cassert>
 #include <iostream>
-#include <string>
+#include <vector>
+#include <tuple>
+#include "messageTranslate.h"
 
-// Constants
-const float SOC_LOW_LIMIT = 20.0;
-const float SOC_HIGH_LIMIT = 80.0;
-const float TEMPERATURE_LOW_LIMIT = 0.0;
-const float TEMPERATURE_HIGH_LIMIT = 45.0;
-const float CHARGE_RATE_LOW_LIMIT = 0.0;
-const float CHARGE_RATE_HIGH_LIMIT = 0.8;
-const float TOLERANCE_PERCENTAGE = 5.0;
+using namespace std;
 
-// Tolerance Calculation Function
-float calculateTolerance(float limit) {
-    return limit * TOLERANCE_PERCENTAGE / 100.0;
+preferredLanguage messageLanguage = preferredLanguage::English;
+
+// Print the status of whether a parameter is in range
+void printRangeStatus(const string& parameter, bool isInRange) {
+    std::string rangeStatus = isInRange ? "in" : "out";
+    std::cout << messageTranslate(parameter, messageLanguage) << ": " 
+              << messageTranslate(rangeStatus, messageLanguage) << std::endl;
 }
 
-// Tolerance Values
-const float SOC_TOLERANCE = calculateTolerance(SOC_HIGH_LIMIT);
-const float TEMPERATURE_TOLERANCE = calculateTolerance(TEMPERATURE_HIGH_LIMIT);
-const float CHARGE_RATE_TOLERANCE = calculateTolerance(CHARGE_RATE_HIGH_LIMIT);
+// Check if a value is within a specified range
+bool isValueInRange(float value, float min, float max) {
+    return (value >= min && value <= max);
+}
 
-// Boundary structure
-struct Boundary {
-    float lowerLimit;
-    float upperLimit;
-    std::string lowerWarningKey;
-    std::string upperWarningKey;
-};
+// Check if temperature is within range
+bool isTemperatureInRange(float temperature) {
+    return isValueInRange(temperature, 0, 45);
+}
 
-std::string getLowLimitMessage(preferredLanguage lang);
-std::string getHighLimitMessage(preferredLanguage lang);
-std::string getNormalRangeMessage(preferredLanguage lang);
+// Check if State of Charge (SOC) is within range
+bool isSocInRange(float soc) {
+    return isValueInRange(soc, 20, 80);
+}
 
-std::string getWarningMessage(float value, const Boundary& boundary, float tolerance, preferredLanguage lang) {
-    if (value < boundary.lowerLimit - tolerance) {
-        return getLowLimitMessage(lang); 
-    } else if (value > boundary.upperLimit + tolerance) {
-        return getHighLimitMessage(lang);
-    } else {
-        return getNormalRangeMessage(lang);
+// Check if charge rate is within range
+bool isChargeRateInRange(float chargeRate) {
+    return (chargeRate <= 0.8);
+}
+
+// Check if all battery parameters are within range
+bool isBatteryOk(float temperature, float soc, float chargeRate) {
+    std::vector<std::tuple<std::string, bool>> checks = {
+        {"Temperature", isTemperatureInRange(temperature)},
+        {"State of Charge", isSocInRange(soc)},
+        {"Charge Rate", isChargeRateInRange(chargeRate)}
+    };
+
+    bool allChecksPassed = true;
+
+    for (const auto& check : checks) {
+        const std::string& parameter = std::get<0>(check);
+        bool isInRange = std::get<1>(check);
+        printRangeStatus(parameter, isInRange);
+        allChecksPassed = allChecksPassed && isInRange;
     }
+
+    return allChecksPassed;
 }
 
-std::string getLowLimitMessage(preferredLanguage lang) {
-    switch (lang) {
-        case preferredLanguage::English:
-            return "Value is below the low limit.";
-        case preferredLanguage::German:
-            return "Wert liegt unterhalb der unteren Grenze.";
-        default:
-            return "";
-    }
-}
+int main() {
+    messageLanguage = preferredLanguage::German;
 
-std::string getHighLimitMessage(preferredLanguage lang) {
-    switch (lang) {
-        case preferredLanguage::English:
-            return "Value is above the high limit.";
-        case preferredLanguage::German:
-            return "Wert liegt über der oberen Grenze.";
-        default:
-            return "";
-    }
-}
+    assert(isBatteryOk(25, 70, 0.7) == true);
+    assert(isBatteryOk(50, 85, 0) == false);
+    assert(isBatteryOk(0, 20, 0.8) == false);
+    assert(isBatteryOk(-1, 70, 0.5) == false);
+    assert(isBatteryOk(25, 10, 0.5) == false);
+    assert(isBatteryOk(25, 70, 0.9) == false);
+    assert(isBatteryOk(45, 80, 0.8) == false);
+    assert(isBatteryOk(0, 20, 0) == true);
 
-std::string getNormalRangeMessage(preferredLanguage lang) {
-    switch (lang) {
-        case preferredLanguage::English:
-            return "Value is within the normal range.";
-        case preferredLanguage::German:
-            return "Wert liegt im normalen Bereich.";
-        default:
-            return "";
-    }
-}
-
-
-std::string mapSocToMessage(float soc, preferredLanguage lang) {
-    Boundary socBoundary = {SOC_LOW_LIMIT, SOC_HIGH_LIMIT, "low_soc_warning", "high_soc_warning"};
-    return getWarningMessage(soc, socBoundary, SOC_TOLERANCE, lang);
-}
-
-std::string mapTemperatureToMessage(float temperature, preferredLanguage lang) {
-    Boundary tempBoundary = {TEMPERATURE_LOW_LIMIT, TEMPERATURE_HIGH_LIMIT, "low_temperature_warning", "high_temperature_warning"};
-    return getWarningMessage(temperature, tempBoundary, TEMPERATURE_TOLERANCE, lang);
-}
-
-std::string mapChargeRateToMessage(float chargeRate, preferredLanguage lang) {
-    Boundary chargeBoundary = {CHARGE_RATE_LOW_LIMIT, CHARGE_RATE_HIGH_LIMIT, "low_charge_rate_warning", "high_charge_rate_warning"};
-    return getWarningMessage(chargeRate, chargeBoundary, CHARGE_RATE_TOLERANCE, lang);
-}
-
-std::tuple<std::string, std::string, std::string> monitorBattery(float soc, float temperature, float chargeRate, preferredLanguage lang) {
-    return std::make_tuple(mapSocToMessage(soc, lang), mapTemperatureToMessage(temperature, lang), mapChargeRateToMessage(chargeRate, lang));
-}
-
-bool isTemperatureOk(float temperature, preferredLanguage lang) {
-    bool temperatureOk = temperature >= TEMPERATURE_LOW_LIMIT && temperature <= TEMPERATURE_HIGH_LIMIT;
-    std::string temperatureMessage = mapTemperatureToMessage(temperature, lang);
-    return temperatureOk;
-}
-
-bool isSocOk(float soc, preferredLanguage lang) {
-    bool socOk = soc >= SOC_LOW_LIMIT && soc <= SOC_HIGH_LIMIT;
-    std::string socMessage = mapSocToMessage(soc, lang);
-    return socOk;
-}
-
-bool isChargeRateOk(float chargeRate, preferredLanguage lang) {
-    bool chargeRateOk = chargeRate >= CHARGE_RATE_LOW_LIMIT && chargeRate <= CHARGE_RATE_HIGH_LIMIT;
-    std::string chargeRateMessage = mapChargeRateToMessage(chargeRate, lang);
-
-    return chargeRateOk;
-}
-
-bool isBatteryOk(float temperature, float soc, float chargeRate, preferredLanguage lang) {
-    bool temperatureOk = isTemperatureOk(temperature, lang);
-    bool socOk = isSocOk(soc, lang);
-    bool chargeRateOk = isChargeRateOk(chargeRate, lang);
-    return temperatureOk && socOk && chargeRateOk;
-}
-
-void initializeTranslations() {
-    // Initialize translations if needed
-}
-
-void setLanguage(preferredLanguage lang) {
-    // Implementation to set language globally if needed
+    std::cout << "All tests passed!" << std::endl;
+    return 0;
 }
