@@ -100,21 +100,19 @@ std::tuple<std::string, std::string, std::string> monitorBattery(float soc, floa
 bool isTemperatureOk(float temperature, preferredLanguage lang) {
     bool temperatureOk = temperature >= TEMPERATURE_LOW_LIMIT && temperature <= TEMPERATURE_HIGH_LIMIT;
     std::string temperatureMessage = mapTemperatureToMessage(temperature, lang);
-    std::cout << Translate("Temperature", lang) << " " << (temperatureOk ? Translate("in", lang) : Translate("out", lang)) << ": " << temperatureMessage << std::endl;
     return temperatureOk;
 }
 
 bool isSocOk(float soc, preferredLanguage lang) {
     bool socOk = soc >= SOC_LOW_LIMIT && soc <= SOC_HIGH_LIMIT;
     std::string socMessage = mapSocToMessage(soc, lang);
-    std::cout << Translate("State of Charge", lang) << " " << (socOk ? Translate("in", lang) : Translate("out", lang)) << ": " << socMessage << std::endl;
     return socOk;
 }
 
 bool isChargeRateOk(float chargeRate, preferredLanguage lang) {
     bool chargeRateOk = chargeRate >= CHARGE_RATE_LOW_LIMIT && chargeRate <= CHARGE_RATE_HIGH_LIMIT;
     std::string chargeRateMessage = mapChargeRateToMessage(chargeRate, lang);
-    std::cout << Translate("Charge Rate", lang) << " " << (chargeRateOk ? Translate("in", lang) : Translate("out", lang)) << ": " << chargeRateMessage << std::endl;
+
     return chargeRateOk;
 }
 
