@@ -3,20 +3,6 @@
 #include <iostream>
 #include <cassert>
 
-bool isBatteryOk(float temperature, float soc, float chargeRate, preferredLanguage lang) {
-    auto [socMessage, temperatureMessage, chargeRateMessage] = monitorBattery(soc, temperature, chargeRate, lang);
-
-    bool temperatureOk = temperature >= TEMPERATURE_LOW_LIMIT && temperature <= TEMPERATURE_HIGH_LIMIT;
-    bool socOk = soc >= SOC_LOW_LIMIT && soc <= SOC_HIGH_LIMIT;
-    bool chargeRateOk = chargeRate >= CHARGE_RATE_LOW_LIMIT && chargeRate <= CHARGE_RATE_HIGH_LIMIT;
-
-    std::cout << Translate("Temperature", lang) << " " << (temperatureOk ? Translate("in", lang) : Translate("out", lang)) << ": " << temperatureMessage << std::endl;
-    std::cout << Translate("State of Charge", lang) << " " << (socOk ? Translate("in", lang) : Translate("out", lang)) << ": " << socMessage << std::endl;
-    std::cout << Translate("Charge Rate", lang) << " " << (chargeRateOk ? Translate("in", lang) : Translate("out", lang)) << ": " << chargeRateMessage << std::endl;
-
-    return temperatureOk && socOk && chargeRateOk;
-}
-
 int main() {
     preferredLanguage lang = preferredLanguage::German;
 
