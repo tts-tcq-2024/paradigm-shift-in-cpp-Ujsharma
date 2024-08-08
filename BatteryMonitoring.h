@@ -27,7 +27,6 @@ bool isChargeRateOk(float chargeRate, preferredLanguage lang);
 bool isBatteryOk(float temperature, float soc, float chargeRate, preferredLanguage lang);
 
 // Function declarations for language transitions
-std::string Translate(const std::string& key, preferredLanguage lang);
 void initializeTranslations();
 void setLanguage(preferredLanguage lang);
 
