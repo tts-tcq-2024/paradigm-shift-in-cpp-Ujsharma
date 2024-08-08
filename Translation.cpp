@@ -2,6 +2,8 @@
 #include <map>
 #include <string>
 
+preferredLanguage selectedLanguage = preferredLanguage::English;
+
 // Translation dictionary
 const map<string, map<string, string>> translations = {
     {"english", {
