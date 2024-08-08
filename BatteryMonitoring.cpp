@@ -58,14 +58,17 @@ bool verifyBatteryStatus(float temperature, float soc, float chargeRate) {
 int main() {
     selectedLanguage = preferredLanguage::German;
 
-    assert(verifyBatteryStatus(25, 70, 0.7) == true);
-    assert(verifyBatteryStatus(50, 85, 0) == false);
-    assert(verifyBatteryStatus(0, 20, 0.8) == false);
-    assert(verifyBatteryStatus(-1, 70, 0.5) == false);
-    assert(verifyBatteryStatus(25, 10, 0.5) == false);
-    assert(verifyBatteryStatus(25, 70, 0.9) == false);
-    assert(verifyBatteryStatus(45, 80, 0.8) == false);
-    assert(verifyBatteryStatus(0, 20, 0) == true);
+    // Test cases with different combinations of temperature, SOC, and charge rate
+    assert(verifyBatteryStatus(25, 70, 0.7) == true); // All within range
+    assert(verifyBatteryStatus(46, 70, 0.7) == false); // Temperature out of range
+    assert(verifyBatteryStatus(25, 81, 0.7) == false); // SOC out of range
+    assert(verifyBatteryStatus(25, 70, 0.9) == false); // Charge rate out of range
+    assert(verifyBatteryStatus(0, 20, 0.8) == true); // Edge case: all on lower limits
+    assert(verifyBatteryStatus(45, 80, 0.8) == true); // Edge case: all on upper limits
+    assert(verifyBatteryStatus(-0.1, 70, 0.7) == false); // Temperature slightly below lower limit
+    assert(verifyBatteryStatus(25, 19.9, 0.7) == false); // SOC slightly below lower limit
+    assert(verifyBatteryStatus(25, 70, -0.1) == false); // Charge rate slightly below lower limit
+    assert(verifyBatteryStatus(25, 70, 0.81) == false); // Charge rate slightly above upper limit
 
     cout << "All tests passed!" << endl;
     return 0;
