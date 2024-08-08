@@ -20,6 +20,12 @@ std::string mapTemperatureToMessage(float temperature, preferredLanguage lang);
 std::string mapChargeRateToMessage(float chargeRate, preferredLanguage lang);
 std::tuple<std::string, std::string, std::string> monitorBattery(float soc, float temperature, float chargeRate, preferredLanguage lang);
 
+// Function declarations for battery checks
+bool isTemperatureOk(float temperature, preferredLanguage lang);
+bool isSocOk(float soc, preferredLanguage lang);
+bool isChargeRateOk(float chargeRate, preferredLanguage lang);
+bool isBatteryOk(float temperature, float soc, float chargeRate, preferredLanguage lang);
+
 // Function declarations for language transitions
 void initializeTranslations();
 void setLanguage(preferredLanguage lang);
