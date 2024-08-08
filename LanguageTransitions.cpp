@@ -18,7 +18,7 @@ std::string languageToString(preferredLanguage lang) {
 }
 
 // Function to translate messages
-std::string messageTranslate(const std::string& key, preferredLanguage lang) {
+std::string Translate(const std::string& key, preferredLanguage lang) {
     std::string langStr = languageToString(lang);
 
     // Check if the current language has a translation for the given key
