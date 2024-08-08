@@ -1,5 +1,5 @@
-#ifndef LANGUAGE_H
-#define LANGUAGE_H
+#ifndef LANGUAGETRANSITIONS_H
+#define LANGUAGETRANSITIONS_H
 
 #include <string>
 
@@ -12,4 +12,4 @@ enum class preferredLanguage {
 // Function to translate messages
 std::string Translate(const std::string& key, preferredLanguage lang);
 
-#endif // LANGUAGE_H
+#endif // LANGUAGETRANSITIONS_H
