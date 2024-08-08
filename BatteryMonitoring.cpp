@@ -30,6 +30,10 @@ struct Boundary {
     std::string upperWarningKey;
 };
 
+std::string getLowLimitMessage(preferredLanguage lang);
+std::string getHighLimitMessage(preferredLanguage lang);
+std::string getNormalRangeMessage(preferredLanguage lang);
+
 std::string getWarningMessage(float value, float lowLimit, float highLimit, preferredLanguage lang) {
     if (value < lowLimit) {
         return getLowLimitMessage(lang);
