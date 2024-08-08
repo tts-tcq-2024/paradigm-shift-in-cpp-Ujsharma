@@ -6,68 +6,67 @@
 
 using namespace std;
 
+preferredLanguage selectedLanguage = preferredLanguage::English;
 
-preferredLanguage messageLanguage = preferredLanguage::English;
-
-// Print the status of whether a parameter is in range
-void printRangeStatus(const string& parameter, bool isInRange) {
-    std::string rangeStatus = isInRange ? "in" : "out";
-    std::cout << messageTranslate(parameter, messageLanguage) << ": " 
-              << messageTranslate(rangeStatus, messageLanguage) << std::endl;
+// Function to print the range status of a parameter
+void displayRangeStatus(const string& parameter, bool withinRange) {
+    string status = withinRange ? "in" : "out";
+    cout << translateMessage(parameter, selectedLanguage) << ": "
+         << translateMessage(status, selectedLanguage) << endl;
 }
 
-// Check if a value is within a specified range
-bool isValueInRange(float value, float min, float max) {
-    return (value >= min && value <= max);
+// Function to check if a value is within specified limits
+bool isWithinRange(float value, float lowerLimit, float upperLimit) {
+    return (value >= lowerLimit && value <= upperLimit);
 }
 
-// Check if temperature is within range
-bool isTemperatureInRange(float temperature) {
-    return isValueInRange(temperature, 0, 45);
+// Function to check if temperature is within the allowed range
+bool checkTemperature(float temperature) {
+    return isWithinRange(temperature, 0, 45);
 }
 
-// Check if State of Charge (SOC) is within range
-bool isSocInRange(float soc) {
-    return isValueInRange(soc, 20, 80);
+// Function to check if State of Charge (SOC) is within the allowed range
+bool checkSoc(float soc) {
+    return isWithinRange(soc, 20, 80);
 }
 
-// Check if charge rate is within range
-bool isChargeRateInRange(float chargeRate) {
+// Function to check if charge rate is within the allowed range
+bool checkChargeRate(float chargeRate) {
     return (chargeRate <= 0.8);
 }
 
-// Check if all battery parameters are within range
-bool isBatteryOk(float temperature, float soc, float chargeRate) {
-    std::vector<std::tuple<std::string, bool>> checks = {
-        {"Temperature", isTemperatureInRange(temperature)},
-        {"State of Charge", isSocInRange(soc)},
-        {"Charge Rate", isChargeRateInRange(chargeRate)}
+// Function to verify if all battery parameters are within the specified ranges
+bool verifyBatteryStatus(float temperature, float soc, float chargeRate) {
+    vector<tuple<string, bool>> parameters = {
+        {"Temperature", checkTemperature(temperature)},
+        {"State of Charge", checkSoc(soc)},
+        {"Charge Rate", checkChargeRate(chargeRate)}
     };
 
-    bool allChecksPassed = true;
+    bool allParametersValid = true;
 
-    for (const auto& check : checks) {
-        const std::string& parameter = std::get<0>(check);
-        bool isInRange = std::get<1>(check);
-        printRangeStatus(parameter, isInRange);
-        allChecksPassed = allChecksPassed && isInRange;
+    for (const auto& param : parameters) {
+        const string& parameterName = get<0>(param);
+        bool isValid = get<1>(param);
+        displayRangeStatus(parameterName, isValid);
+        allParametersValid = allParametersValid && isValid;
     }
 
-    return allChecksPassed;
+    return allParametersValid;
 }
 
 int main() {
-    messageLanguage = preferredLanguage::German;
+    selectedLanguage = preferredLanguage::German;
 
-    assert(isBatteryOk(25, 70, 0.7) == true);
-    assert(isBatteryOk(50, 85, 0) == false);
-    assert(isBatteryOk(0, 20, 0.8) == false);
-    assert(isBatteryOk(-1, 70, 0.5) == false);
-    assert(isBatteryOk(25, 10, 0.5) == false);
-    assert(isBatteryOk(25, 70, 0.9) == false);
-    assert(isBatteryOk(45, 80, 0.8) == false);
-    assert(isBatteryOk(0, 20, 0) == true);
+    assert(verifyBatteryStatus(25, 70, 0.7) == true);
+    assert(verifyBatteryStatus(50, 85, 0) == false);
+    assert(verifyBatteryStatus(0, 20, 0.8) == false);
+    assert(verifyBatteryStatus(-1, 70, 0.5) == false);
+    assert(verifyBatteryStatus(25, 10, 0.5) == false);
+    assert(verifyBatteryStatus(25, 70, 0.9) == false);
+    assert(verifyBatteryStatus(45, 80, 0.8) == false);
+    assert(verifyBatteryStatus(0, 20, 0) == true);
 
-    std::cout << "All tests passed!" << std::endl;
+    cout << "All tests passed!" << endl;
     return 0;
 }
