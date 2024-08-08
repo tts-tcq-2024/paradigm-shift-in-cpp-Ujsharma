@@ -2,6 +2,15 @@
 #include <map>
 #include <vector>
 
+preferredLanguage messageLanguage = preferredLanguage::English;
+
+// Print the status of whether a parameter is in range
+void printRangeStatus(const string& parameter, bool isInRange) {
+    std::string rangeStatus = isInRange ? "in" : "out";
+    std::cout << Translate(parameter, messageLanguage) << ": " 
+              << Translate(rangeStatus, messageLanguage) << std::endl;
+}
+
 // Tolerance Calculation Function
 float calculateTolerance(float limit) {
     return limit * TOLERANCE_PERCENTAGE / 100.0;
