@@ -1,15 +1,16 @@
-#ifndef LANGUAGETRANSLATE_H
-#define LANGUAGETRANSLATE_H
+#ifndef TRANSLATION_H
+#define TRANSLATION_H
 
 #include <string>
+using namespace std;
 
-// Enum class for supported languages
+// Enum for supported languages
 enum class preferredLanguage {
     English,
     German
 };
 
 // Function to translate messages
-std::string messageTranslate(const std::string& key, preferredLanguage lang);
+string translateMessage(const string& key, preferredLanguage lang);
 
-#endif // LANGUAGETRANSLATE_H
+#endif // TRANSLATION_H
