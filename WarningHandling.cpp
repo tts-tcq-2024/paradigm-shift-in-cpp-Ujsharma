@@ -44,3 +44,18 @@ std::string mapChargeRateToMessage(float chargeRate, const std::string& language
     Boundary chargeBoundary = {CHARGE_RATE_LOW_LIMIT, CHARGE_RATE_HIGH_LIMIT, "low_charge_rate_warning", "high_charge_rate_warning"};
     return getWarningMessage(chargeRate, chargeBoundary, CHARGE_RATE_TOLERANCE, language);
 }
+
+int main() {
+    messageLanguage = preferredLanguage::German;
+
+    assert(isBatteryOk(25, 70, 0.7) == true);
+    assert(isBatteryOk(50, 85, 0) == false);
+    assert(isBatteryOk(0, 20, 0.8) == false);
+    assert(isBatteryOk(-1, 70, 0.5) == false);
+    assert(isBatteryOk(25, 10, 0.5) == false);
+    assert(isBatteryOk(25, 70, 0.9) == false);
+    assert(isBatteryOk(45, 80, 0.8) == false);
+    assert(isBatteryOk(0, 20, 0) == true);
+
+    std::cout << "All tests passed!" << std::endl;
+    return 0;
